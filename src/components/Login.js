@@ -1,8 +1,46 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Header from './Header';
+import { checkValidData } from '../utils/validate';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import auth from "../utils/firebase"
 
 const Login = () => {
     const [isSignInForm,setIsSignInForm]=useState(true);
+    const [errorMessage,setErrorMessage]=useState(null);
+    
+    const name=useRef(null);
+    const email = useRef(null);
+    const password = useRef(null);
+    
+    const handleButtonClick = () => {
+        
+        //validate the form data
+        const message = checkValidData(name.current.value,email.current.value,password.current.value);
+        setErrorMessage(message);
+            //create a new useer in firebase.(sign in .sign up)
+        if(message)return;
+        //sign in ans sign up
+        if(!isSignInForm){
+            
+    createUserWithEmailAndPassword(auth,name.current.value,email.current.value,password.current.value)
+    .then((userCredential) => {
+    // Sign uplogic 
+    const user = userCredential.user;
+    console.log(user);
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    setErrorMessage(errorCode + "-" + errorCode);
+  });
+       
+    }else{
+        //sign in logic
+    }
+        
+            
+        
+    };
 
     const toggleSignInForm = () => {
         setIsSignInForm(!isSignInForm);
@@ -15,23 +53,29 @@ const Login = () => {
             alt="logo"
             />
         </div>
-        <form className="bg-black absolute w-3/12  my-40 mx-auto right-0 left-0 text-white p-12 opacity-80">
-            <h1 className="text-3xl py-4">
+        <form onSubmit={(e) => e.preventDefault()}
+         className="absolute left-0 right-0 w-3/12 p-12 mx-auto my-40 text-white bg-black opacity-80">
+            <h1 className="py-4 text-3xl" >
                 {isSignInForm ? "Sign In" : "Sign up"}
             </h1>
             {!isSignInForm && (
-            <input type="text" placeholder="Full name" className="p-2 my-4 w-full rounded-lg bg-gray-700" />
+            <input ref={name}
+             type="text" placeholder="Full name" className="w-full p-2 my-4 bg-gray-700 rounded-lg" />
 
             ) }
           
-            <input type="text" placeholder="Email Address" className="p-2 my-4 w-full rounded-lg bg-gray-700" />
+            <input ref={email}
+            type="text" placeholder="Email Address" className="w-full p-2 my-4 bg-gray-700 rounded-lg" />
 
-            <input type="password" placeholder="password" className="p-2 my-4 w-full rounded-lg bg-gray-700" />
+            <input ref={password}
+             type="password" placeholder="password" className="w-full p-2 my-4 bg-gray-700 rounded-lg" />
 
-            <button className="p-2 my-6 bg-red-600 rounded-xl w-full">
+            <p className="py-2 text-lg font-bold text-red-600">{errorMessage}</p>
+            <button 
+            className="w-full p-2 my-6 bg-red-600 rounded-xl" onClick={handleButtonClick}>
                 {isSignInForm
                 ?"Sign in":"Sign up"}</button>
-            <p className="cursor-pointer py-4" onClick={toggleSignInForm}>
+            <p className="py-4 cursor-pointer" onClick={toggleSignInForm}>
                  {isSignInForm
                  ? "New to Netflix? Sign Up Now" 
                 :"Already registered? Sign In Now"}</p>
