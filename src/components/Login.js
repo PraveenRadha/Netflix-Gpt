@@ -1,16 +1,18 @@
 import React, { useRef, useState } from 'react';
 import Header from './Header';
 import { checkValidData } from '../utils/validate';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword} from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile} from "firebase/auth";
 import auth from "../utils/firebase"
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [isSignInForm,setIsSignInForm]=useState(true);
     const [errorMessage,setErrorMessage]=useState(null);
     
-    // const name=useRef(null);
+    const name=useRef(null);
     const email = useRef(null);
     const password = useRef(null);
+    const navigate=useNavigate();
     
     const handleButtonClick = () => {
 
@@ -25,7 +27,19 @@ const Login = () => {
     .then((userCredential) => {
     // Sign uplogic 
     const user = userCredential.user;
-    console.log(user);
+  
+    updateProfile(user, {
+      displayName: name.current.value, 
+      photoURL: "https://avatars.githubusercontent.com/u/126752808?v=4",
+    }).then(() => {
+      // Profile updated!
+      navigate("/browse");
+      
+    }).catch((error) => {
+      // An error occurred
+      setErrorMessage(error.message);
+    });
+   
   })
   .catch((error) => {
     const errorCode = error.code;
@@ -40,7 +54,8 @@ const Login = () => {
   .then((userCredential) => {
     // Signed in 
     const user = userCredential.user;
-    console.log(user);
+   
+    navigate("/browse");
   })
   .catch((error) => {
     const errorCode = error.code;
@@ -59,7 +74,6 @@ const Login = () => {
         <div className="absolute">
             <img src="https://assets.nflxext.com/ffe/siteui/vlv3/8728e059-7686-4d2d-a67a-84872bd71025/e90516bd-6925-4341-a6cf-0b9f3d0c140a/IN-en-20240708-POP_SIGNUP_TWO_WEEKS-perspective_WEB_34324b52-d094-482b-8c2a-708dc64c9065_small.jpg" 
             alt="logo"
-            // className="absolute object-cover w-full h-full"
             />
         </div>
         <form onSubmit={(e) => e.preventDefault()}
