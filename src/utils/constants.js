@@ -17,4 +17,5 @@ export const API_OPTIONS = {
     {identifier: 'kannada', name: "Kannada"},
     {identifier: 'marathi', name: "Marathi"},
     {identifier: 'hindi', name: "Hindi"},
-  ]
+  ];
+  // export const OPENAI_KEY = "grtu513e0ef1ec1d1b058641650926414c1dae36cdbb7eef80c33588e6f1b4598f05";
