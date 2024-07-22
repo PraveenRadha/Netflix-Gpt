@@ -26,4 +26,8 @@ fetch data for trailer video
 update the store with trailer video
 embeded the youtube video and make it automate and mute
 tailwind class to make it look awesome
+secondary conatiner finished by completed the movielist and movie card design was look fanstastic
+Gptsearch page
+Gpt searchbar
+make site is multi-language feature in it.
 #
